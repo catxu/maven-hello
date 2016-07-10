@@ -1,4 +1,4 @@
-# maven-hello
+# add a new branch 'user-core' for maven-hello
 
 mvn compile
 mvn clean test
