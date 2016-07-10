@@ -15,7 +15,23 @@ mvn help:describe -Dplugin=<plugin_name> -Dgoal=<goal> -Ddetail=true
 eclipse\STS initial maven jar fail solution:
 $IDE_HOME$/plugins/org.eclipse.m2e.maven.runtime_1.7.0.20160603-1931/jars/maven-settings-builder-3.3.9.jar
 
-依赖传递
+依赖传递和 scope 作用域：
+compile test runtime
+作用域为 test 的包不会进行依赖传递
+!important:
+当依赖级别相同时，pom 文件中谁写在前面就加载谁；
+**********不同时，谁的依赖层级少就加载谁：如下，service 应加载 log 中的 commons-logging
+service -> user-core -> dbunit -> commons-logging
+service -> log -> commons-logging
+
+依赖排除：
+<exclusions>
+	<exclusion>
+		<groupId></groupId>
+		<artifactId></artifactId>
+	</exclusion>
+</exclusions>
+
 maven 隐藏变量：
 ${project.xxx} 当前 pom 文件中任意节点的内容
 
