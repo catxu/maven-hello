@@ -16,7 +16,7 @@ eclipse\STS initial maven jar fail solution:
 $IDE_HOME$/plugins/org.eclipse.m2e.maven.runtime_1.7.0.20160603-1931/jars/maven-settings-builder-3.3.9.jar
 
 依赖传递和 scope 作用域：
-compile test runtime
+compile test runtime provided(在打包发布时不会导入)
 作用域为 test 的包不会进行依赖传递
 !important:
 当依赖级别相同时，pom 文件中谁写在前面就加载谁；
@@ -31,6 +31,19 @@ service -> log -> commons-logging
 		<artifactId></artifactId>
 	</exclusion>
 </exclusions>
+
+聚合
+<modules>
+	<module>../user-core</module>
+	<module>../user-log</module>
+</modules>
+继承
+<parent>
+	<groupId>${project.groupId}</groupId>
+	<artifactId>user-parent</artifactId>
+	<version>${project.version}</version>
+	<relativePath>../user-parent/pom.xml</relativePath>
+</parent>
 
 maven 隐藏变量：
 ${project.xxx} 当前 pom 文件中任意节点的内容
@@ -47,3 +60,37 @@ ${project.xxx} 当前 pom 文件中任意节点的内容
 
 4. 对mock对象执行验证
 	Easymock.verify(userDao);
+
+
+配置本地私有仓库：
+<profiles>
+<profile>
+<id>nexusRepository</id>
+<repositories>
+	<repository>
+		<id>nexus</id>
+		<name>Nexus repository</name>
+		<url>http://localhost:8081/xxx</url>	<!-- group/hosted/proxy/virtual -->
+		<releases>
+			<enabled>true</enabled>
+		</releases>
+		<snapshots>
+			<enabled>true</enabled>
+		</snapshots>
+	</repository>
+</repositories>
+</profile>
+</profiles>
+<activeProfiles>
+	<activeProfile>nexusRepository</activeProfile>
+</activeProfiles>
+
+配置仓库镜像(让所有jar包都从本地url去下载)
+<mirrors>
+	<mirror>
+		<id>nexusMirror</id>
+		<mirrorOf>nexus,central</mirrorOf>
+		<name>xxx</name>
+		<url></url>
+	</mirror>
+</mirrors>
